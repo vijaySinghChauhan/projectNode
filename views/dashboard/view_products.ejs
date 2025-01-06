@@ -52,8 +52,14 @@
                     <td><%= product_data[i].percentage_discount %></td>
                     <td>
                       <div>
+                        <a href="/edit/<%= product_data[i]._id %>" >
                         <button >Edit</button>
+                      </a>
+                        
+                        <a href="/delete/<%= product_data[i]._id %>" >
                         <button >Delete</button>
+                        </a>
+
                       </div>
                     </td>
                   </tr>

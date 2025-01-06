@@ -177,6 +177,32 @@ router.post('/dashboard/add_product', cpUpload,(req,res) => {
     .catch( err => res.status(400).json("error"+ err))
 });
 
+
+// Update product Api
+router.post('/edit/:id', cpUpload,(req,res) => {
+
+    var add_product = {
+        product_name : req.body.product_name,
+        product_categorie: req.body.product_categorie,
+        available_quantity : req.body.available_quantity,
+        product_weight : req.body.product_weight,
+        percentage_discount : req.body.percentage_discount,
+        stock_alert: req.body.stock_alert,
+        price: req.body.price,
+        product_description: req.body.product_description,
+        product_id: req.body.product_id,
+        product_main_id: req.body.product_main_id,
+        // img2: req.file.img2,
+        // filename: req.file.filename
+     
+    };
+    var repost = new productSchema(add_product);
+    repost.save()
+    .then(()=> res.json("updated successfully"))
+    .catch( err => res.status(400).json("error"+ err))
+});
+
+
 router.get('/view_products',async(req,res)=>
 {
     try{
@@ -193,6 +219,36 @@ router.get('/view_products',async(req,res)=>
 }
 );
 
+//
+
+//   Edit  Product API by id
+router.get("/edit/:id", async(req,res)=>
+    {
+    try{    
+    const prodData = await productSchema.findById(req.params.id);
+    res.render('dashboard/edit_product',{prodData: prodData});
+    }
+    catch(err)
+    {
+        console.log(err)
+    }
+    }
+    )
+
+
+//     Delete API
+router.get("/delete/:id", async(req,res)=>
+{
+try{    
+const prodData = await productSchema.findByIdAndDelete(req.params.id);
+res.redirect('/view_products');
+}
+catch(err)
+{
+    console.log(err)
+}
+}
+)
 
 router.get('/add_resturants',function(req,res)
 {
