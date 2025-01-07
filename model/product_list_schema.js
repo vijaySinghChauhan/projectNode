@@ -54,12 +54,12 @@ const productSchema = new mongoose.Schema({
         required:true
     },
 
-    file1:
+    img1:
     {
         type:String,
     },
 
-    file2:
+    img2:
     {
         type:String,
     },

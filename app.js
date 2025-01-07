@@ -9,6 +9,7 @@ var parser = require('body-parser')
 app.set('view engine', 'ejs')
 
 app.use(express.static('views'))
+app.use('/upload',express.static('upload'))
 app.use(parser.json())
 app.use(parser.urlencoded({extended: true}))
 

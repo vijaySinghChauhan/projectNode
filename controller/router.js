@@ -8,11 +8,21 @@ const { v4:uuidv4} =require('uuid');
 
 
 
-router.get('/',function(req,res)
-{
-    res.render('index')
-}
-);
+router.get('/',async(req,res)=>
+    {
+        try{
+            const product_data= await productSchema.find({})
+            res.render('index',{product_data: product_data});
+              // res.json(product_data);
+            console.log(product_data);
+        
+                }
+                catch(err)
+                {
+                    console.log(err);
+                }
+    }
+    );
 
 router.get('/about',function(req,res)
 {
@@ -93,15 +103,16 @@ router.get('/add_product',function(req,res)
 }
 );
 
-
+var filename1='image.jpeg'
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './upload');
     },
   
     filename: function (req, file, cb) {
-        cb(null,file.originalname);
-        // cb(null, uuidv4()+'-'+ Date.now() + path.extname(file.originalname)) //Appending .jpg
+       //cb(null,file.originalname);
+        filename1 = uuidv4()+'-'+ Date.now()+'.jpeg';
+        cb(null, filename1 ) //Appending .jpg
       }
 
   });
@@ -119,28 +130,32 @@ const storage = multer.diskStorage({
 }).fields(
     [
         {
-            name:'file1',
+            name:'img1',
             maxCount:1
         },
         {
-            name: 'file2', maxCount:2
+            name: 'img2', maxCount:2
         }
     ]
 );
 
 function checkFileType(file, cb) {
-    if (file.fieldname === "file1") {
-        if (
-            file.mimetype === 'application/pdf' ||
-            file.mimetype === 'application/msword' ||
-            file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-          ) { // check file type to be pdf, doc, or docx
+    if (file.fieldname === "img1") {
+        if (   file.mimetype === 'image/png' ||
+            file.mimetype === 'image/jpg' ||
+            file.mimetype === 'image/jpeg'
+
+            // || file.mimetype === 'application/pdf' ||
+            // file.mimetype === 'application/msword' ||
+            // file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          
+        ) { // check file type to be pdf, doc, or docx
               cb(null, true);
           } else {
               cb(null, false); // else fails
           }
     }
-    else if (file.fieldname === "file2" ) {
+    else if (file.fieldname === "img2" ) {
         if (
             file.mimetype === 'image/png' ||
             file.mimetype === 'image/jpg' ||
@@ -153,7 +168,7 @@ function checkFileType(file, cb) {
           }
         }
     }
-
+// Add product Api
 router.post('/dashboard/add_product', cpUpload,(req,res) => {
 
     var add_product = {
@@ -167,8 +182,8 @@ router.post('/dashboard/add_product', cpUpload,(req,res) => {
         product_description: req.body.product_description,
         product_id: req.body.product_id,
         product_main_id: req.body.product_main_id,
-        // img2: req.file.img2,
-        // filename: req.file.filename
+        img1: filename1,
+        img2: filename1
      
     };
     var repost = new productSchema(add_product);
@@ -192,8 +207,8 @@ router.post('/edit/:id', cpUpload,(req,res) => {
         product_description: req.body.product_description,
         product_id: req.body.product_id,
         product_main_id: req.body.product_main_id,
-        // img2: req.file.img2,
-        // filename: req.file.filename
+        img1: filename1,
+        img2: filename1
      
     };
     var repost = new productSchema(add_product);
@@ -202,13 +217,13 @@ router.post('/edit/:id', cpUpload,(req,res) => {
     .catch( err => res.status(400).json("error"+ err))
 });
 
-
+// Get Api view Products
 router.get('/view_products',async(req,res)=>
 {
     try{
         const product_data= await productSchema.find({})
         res.render('dashboard/view_products',{product_data: product_data});
-    
+          // res.json(product_data);
         console.log(product_data);
     
             }
@@ -219,7 +234,7 @@ router.get('/view_products',async(req,res)=>
 }
 );
 
-//
+//Get Api  Products for main page
 
 //   Edit  Product API by id
 router.get("/edit/:id", async(req,res)=>

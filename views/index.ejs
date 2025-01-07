@@ -6,6 +6,12 @@
       background-size: contain;
       
     }
+    .my-brand-image {
+    object-position: center;
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
     </style>
 </head>
 
@@ -28,15 +34,15 @@
   </div>
 
   <!-- The slideshow/carousel -->
-  <div class="carousel-inner" style="height: 700px" >
+  <div class="carousel-inner" style="height: 500px" >
     <div class="carousel-item active">
-      <img src="images/coffee1.webp" alt="Los Angeles" class="object-fit-sm example1">
+      <img src="images/240_F_302285002_Oe4eiCoe3AUpdxcdinpcisKXkUvqlIW0.jpg" alt="Los Angeles" class="img-fluid  my-brand-image " >
     </div>
     <div class="carousel-item">
-      <img src="images/coffee2.webp" alt="Chicago" class="object-fit-cover example1" >
+      <img src="images/240_F_925652159_1Zcrte44mI8PhZqQligA44a4M1dvec5F.jpg" alt="Chicago" class="img-fluid  my-brand-image" >
     </div>
     <div class="carousel-item">
-      <img src="images/coffee3.jpeg" alt="New York" class="img-fluid example1" >
+      <img src="images/240_F_709586758_IBmPkiHuxhfVKHcE8C8vmkqpBqJurHWS.jpg" alt="New York" class="img-fluid  my-brand-image" >
     </div>
   </div>
 
@@ -48,10 +54,31 @@
     <span class="carousel-control-next-icon"></span>
   </button>
 </div>
-        <img src="/images/coffee.jpg" width="700" height="700" class="float-end"/>
+        <!-- <img src="/images/coffee.jpg" width="700" height="700" class="float-end"/> -->
         <%- include('./common/footer.ejs'); %> 
     </div>
 
+    <div class="container m-5  ">
+      <div class="row width=100%">
+        <div class="row ">
+          <% if(product_data.length>0) %>
+          <% for(var i=0; i<product_data.length; i++ ){ %>
+
    
+      <div class="card m-1" style="width:230px; height: 400px;">
+        <img class="card-img-top  pt-1" src="/upload/<%= product_data[i].img1%> " salt="Card image" style="width: 200px; height: 230px;">
+        <div class="card-body">
+          <h4 class="card-title fs-5 "><%= product_data[i].product_name %></h4>
+          <p class="card-text fs-6"><%= product_data[i].product_description %></p>
+          <p class="card-text fs-6">₹ <%= product_data[i].price %></p>
+          <a href="#" class="btn btn-primary">Buy now</a>
+        </div>
+      </div>
+      <% } %>
+     </div>
+    
+      
+      
+</div>    
     </body>
 </html>
