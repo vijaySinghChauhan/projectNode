@@ -197,7 +197,7 @@ router.post('/dashboard/add_product', cpUpload,(req,res) => {
 router.post('/signin', async(req,res) => {
 
         try {
-            const user = await loginSchema.findOne({ email: req.body.email }).exec();
+            const user = await loginSchema.findOne({ where: { email: req.body.email } });
         
             if (!user) {
                 return res.status(404).send('User not found');
