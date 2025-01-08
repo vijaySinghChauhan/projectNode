@@ -4,7 +4,8 @@ var router = express.Router();
 var registerSchema = require("../model/register_schema");
 var productSchema = require("../model/product_list_schema");
 const { v4:uuidv4} =require('uuid');
-
+const loginSchema = require('../model/login_schema');
+const session = require('express-session');
 
 
 
@@ -192,6 +193,32 @@ router.post('/dashboard/add_product', cpUpload,(req,res) => {
     .catch( err => res.status(400).json("error"+ err))
 });
 
+//  Login Api
+router.post('/signin', async(req,res) => {
+
+        try {
+            const user = await loginSchema.findOne({ email: req.body.email }).exec();
+        
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+        
+            const isMatch = await user.comparePassword(password);
+        
+            if (!isMatch) {
+                return res.status(401).send('Invalid password');
+            }
+        
+            res.status(200).send('Login successful');
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('An error occurred');
+        }
+
+});
+
+    
+
 
 // Update product Api
 router.post('/edit/:id', cpUpload,(req,res) => {
@@ -251,6 +278,41 @@ router.get("/edit/:id", async(req,res)=>
     )
 
 
+
+//     router.get('/detail_page/:id',function(req,res)
+// {
+//     res.render('dashboard/detail_page')
+// }
+// );
+
+  //   detail  Product API by id
+   router.get('/detail_page/:id', async(req,res)=>
+    {
+    try{    
+    const prodData = await productSchema.findById(req.params.id);
+    res.render('detail_page',{prodData: prodData});
+    }
+    catch(err)
+    {
+        console.log(err)
+    }
+    }
+    )
+    //   detail  Product API by id
+// router.get("/product/:id", async(req,res)=>
+//     {
+//     try{    
+//     const prodData = await productSchema.findById(req.params.id);
+//     res.render('dashboard/detail_page',{prodData: prodData});
+//     }
+//     catch(err)
+//     {
+//         console.log(err)
+//     }
+//     }
+//     )
+
+
 //     Delete API
 router.get("/delete/:id", async(req,res)=>
 {
@@ -276,6 +338,8 @@ router.get('/cart',function(req,res)
     res.render('dashboard/cart')
 }
 );
+
+
 
 
 router.get("/view_registrations", async (req,res) => {

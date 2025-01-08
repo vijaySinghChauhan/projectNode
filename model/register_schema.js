@@ -1,5 +1,5 @@
 const mongoose  = require("mongoose");
-
+const bcrypt = require('bcrypt');
 const registerSchema = new mongoose.Schema({
     fullname:
     {
@@ -42,7 +42,22 @@ const registerSchema = new mongoose.Schema({
         required:true
     },
 })
-
+registerSchema.pre('save',async function(next){
+    if(this.isModified('password')){
+        this.password = await bcrypt.hash(this.password,10);
+        this.confirmpassword = await bcrypt.hash(this.confirmpassword,10);
+    }
+    next();
+})
+//creating collection
+registerSchema.methods.comparePassword = async function(password){
+    const user = this;
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch){
+        throw new Error('Password is incorrect');
+    }
+    return user;
+}
 const registerSchema1= new mongoose.model("register",registerSchema);
 module.exports= registerSchema1;
 
