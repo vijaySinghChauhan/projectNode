@@ -197,16 +197,17 @@ router.post('/dashboard/add_product', cpUpload,(req,res) => {
 router.post('/signin', async(req,res) => {
 
         try {
-            const user = await loginSchema.findOne({ where: { email: req.body.email } });
+            const user = await registerSchema.findOne({ email: req.body.email });
         
             if (!user) {
                 return res.status(404).send('User not found');
             }
         
-            const isMatch = await user.comparePassword(password);
+            const isMatch = await user.comparePassword(req.body.password);
         
             if (!isMatch) {
                 return res.status(401).send('Invalid password');
+            
             }
         
             res.status(200).send('Login successful');
